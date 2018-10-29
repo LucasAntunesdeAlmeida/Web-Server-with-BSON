@@ -1,10 +1,13 @@
-import os, sys, getopt
-import socket
-import threading
+import getopt
 import logging
+import os
+import socket
+import sys
+import threading
+from pathlib import Path
 
 import communication
-from pathlib import Path
+
 
 def setDefaultServer(message):
 	'''
@@ -117,10 +120,10 @@ def postMethod(url, clientId, clientInfo, content, key):
 		archivePath += 'index.html'
 
 	else:
-		if url[0] == '/':
-			archivePath += str(''.join(url.split('/')))
-		else:
-			archivePath += url
+		# if url[0] == '/':
+		# 	archivePath += str(''.join(url.split('/')))
+		# else:
+		# 	archivePath += url
 		archivePath += str(''.join(url.split('/')[-1]))
 
 
@@ -171,10 +174,10 @@ def deleteMethod(url, clientId, clientInfo, key):
 		archivePath += 'index.html'
 
 	else:
-		if url[0] == '/':
-		 	archivePath += str(''.join(url.split('/')))
-		else:
-			archivePath += url
+		# if url[0] == '/':
+		# 	archivePath += str(''.join(url.split('/')))
+		# else:
+		# 	archivePath += url
 		archivePath += str(''.join(url.split('/')[-1]))
 
 	logging.info(" DELETE {0}".format(url))

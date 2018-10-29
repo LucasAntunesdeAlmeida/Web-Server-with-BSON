@@ -1,10 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import os, sys, getopt
-import socket
-import threading
+import getopt
 import logging
+import os
+import socket
+import sys
+import threading
+from pathlib import Path
+
+import communication
+from treatment.scrypt import key_exchange
+from treatment.server import (clearRules, deleteMethod, getMethod, postMethod,
+                              synFlood, unknownMethod)
+
 try:
     import bson
 except:
@@ -12,10 +21,6 @@ except:
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(threadName)s:%(message)s')
 
-import communication
-from pathlib import Path
-from treatment.scrypt import key_exchange
-from treatment.server import getMethod, postMethod, deleteMethod, unknownMethod, synFlood, clearRules
 
 def connected(client, addr):
 	'''
@@ -31,11 +36,13 @@ def connected(client, addr):
 
 	while True:
 		message = communication.recvMessage(client)
-
 		if message:
 			signature = communication.hmacFromRequest(message, key)
+			print('sig = {0}'.format(signature))
+			print('message = {0}'.format(message['signature']))
 
 			if signature == message['signature']:
+				print('aqui')
 				if message['command'] == "GET":
 					response = getMethod(message['url'], message['clientId'], message['clientInfo'], key)
 					communication.sendMessage(client, response)

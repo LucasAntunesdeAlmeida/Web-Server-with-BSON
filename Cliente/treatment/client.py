@@ -9,6 +9,7 @@ import sys
 
 import communication
 
+
 def setDefaultClient(message):
 	'''
 	Define os valores default da estrutura do protobuf
@@ -48,6 +49,7 @@ def sendMessage(data, communication, clientId, sock, key):
 			print("Arquivo não localizado!")
 			exit(1)
 
+	message['signature'] = communication.hmacFromRequest(message, key)
 	communication.sendMessage(sock, message)
 	return message
 
