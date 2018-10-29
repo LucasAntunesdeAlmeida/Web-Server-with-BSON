@@ -4,9 +4,10 @@
 import os, sys, getopt
 import socket
 import random
-import bson
-#import request_pb2 as request
-#import response_pb2 as response
+try:
+    import bson
+except:
+    print("Falha ao importar as bibliotecas\nTente: sudo pip3 install bson")
 import communication
 from treatment.ccrypt import key_exchange
 from treatment.client import getResponse, sendMessage
@@ -102,4 +103,3 @@ if __name__ == '__main__':
 	Inicio do programa e chamada da funcoa principal
 	'''
 	main(sys.argv[1:])
-

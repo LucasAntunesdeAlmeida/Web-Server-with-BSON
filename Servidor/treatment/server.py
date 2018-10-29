@@ -43,7 +43,6 @@ def getMethod(url, clientId, clientInfo, key):
 	:return: Protobuf já pronto para o envio
 	'''
 
-	#message = response.Response()
 	message = {}
 	archivePath = str(Path().absolute())
 	archivePath += '/contents/'
@@ -101,7 +100,6 @@ def postMethod(url, clientId, clientInfo, content, key):
 	:return: Estrutura Protobuf já pronta para o envio
 	'''
 
-	#message = response.Response()
 	message = {}
 	archivePath = str(Path().absolute())
 	archivePath += '/contents/'
@@ -121,10 +119,10 @@ def postMethod(url, clientId, clientInfo, content, key):
 		archivePath += 'index.html'
 
 	else:
-		# if url[0] == '/':
-		# 	archivePath += str(''.join(url.split('/')))
-		# else:
-		# 	archivePath += url
+		if url[0] == '/':
+			archivePath += str(''.join(url.split('/')))
+		else:
+			archivePath += url
 		archivePath += str(''.join(url.split('/')[-1]))
 
 
@@ -161,7 +159,6 @@ def deleteMethod(url, clientId, clientInfo, key):
 	:return: Estrutura protobuf de resposta já pronta para envio
 	'''
 
-	#message = response.Response()
 	message = {}
 	archivePath = str(Path().absolute())
 	archivePath += '/contents/'
@@ -176,10 +173,10 @@ def deleteMethod(url, clientId, clientInfo, key):
 		archivePath += 'index.html'
 
 	else:
-		# if url[0] == '/':
-		# 	archivePath += str(''.join(url.split('/')))
-		# else:
-		# 	archivePath += url
+		if url[0] == '/':
+		 	archivePath += str(''.join(url.split('/')))
+		else:
+			archivePath += url
 		archivePath += str(''.join(url.split('/')[-1]))
 
 	logging.info(" DELETE {0}".format(url))
@@ -205,11 +202,9 @@ def unknownMethod(key):
 	'''
 
 	logging.info(" Unknown command")
-	#message = response.Response()
 	message = {}
 	message = setDefaultServer(message)
 	message['status'] = "FAIL - 401"
 	message['signature'] = communication.hmacFromResponse(message, key)
 
 	return message
-

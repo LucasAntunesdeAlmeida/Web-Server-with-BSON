@@ -5,12 +5,13 @@ import os, sys, getopt
 import socket
 import threading
 import logging
-import bson
+try:
+    import bson
+except:
+    print("Falha ao importar as bibliotecas\nTente: sudo pip3 install bson")
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(threadName)s:%(message)s')
 
-#import request_pb2 as request
-#import response_pb2 as response
 import communication
 from pathlib import Path
 from treatment.scrypt import key_exchange
@@ -29,7 +30,6 @@ def connected(client, addr):
 	key=key_exchange(client)
 
 	while True:
-		#message = communication.recvMessage(client, request.Request)
 		message = communication.recvMessage(client)
 
 		if message:
@@ -158,4 +158,3 @@ if __name__ == '__main__':
 	'''
 
 	main(sys.argv[1:])
-

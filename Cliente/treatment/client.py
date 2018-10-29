@@ -1,3 +1,6 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import getopt
 import os
 import random
@@ -5,9 +8,6 @@ import socket
 import sys
 
 import communication
-#import request_pb2 as request
-#import response_pb2 as response
-
 
 def setDefaultClient(message):
 	'''
@@ -17,16 +17,6 @@ def setDefaultClient(message):
 	:param message: estrutura protobuf
 	:return: estrutura protobuf com os valores definidos
 	'''
-
-	#message['command'] = ""
-	#message['protoVersion'] = "1.0"
-	#message['url'] = ""
-	#message['clientId'] = ""
-	#message['clientInfo'] = ""
-	#message['encoding'] = "utf-8"
-	#message['content'] = ""
-	#message['signature'] = ""
-
 	message['command'] = ""
 	message['protoVersion'] = "1.0"
 	message['url'] = ""
@@ -57,16 +47,11 @@ def sendMessage(data, communication, clientId, sock, key):
 		except:
 			print("Arquivo não localizado!")
 			exit(1)
-	else:
-		pass
-
-	#message['signature'] = communication.hmacFromRequest(message, key)
 
 	communication.sendMessage(sock, message)
 	return message
 
 def getResponse(communication, message, sock,key):
-	#responseFromServer = communication.recvMessage(sock, response.Response)
 	responseFromServer = communication.recvMessage(sock)
 
 	if responseFromServer:
@@ -112,4 +97,3 @@ def getResponse(communication, message, sock,key):
 			else:
 				print("STATUS:", responseFromServer['status'])
 				print("Comando Desconhecido")
-
