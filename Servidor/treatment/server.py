@@ -3,8 +3,6 @@ import socket
 import threading
 import logging
 
-#import request_pb2 as request
-#import response_pb2 as response
 import communication
 from pathlib import Path
 
