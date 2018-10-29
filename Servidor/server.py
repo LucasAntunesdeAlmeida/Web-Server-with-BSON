@@ -5,11 +5,12 @@ import os, sys, getopt
 import socket
 import threading
 import logging
+import bson
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(threadName)s:%(message)s')
 
-import request_pb2 as request
-import response_pb2 as response
+#import request_pb2 as request
+#import response_pb2 as response
 import communication
 from pathlib import Path
 from treatment.scrypt import key_exchange
@@ -28,22 +29,23 @@ def connected(client, addr):
 	key=key_exchange(client)
 
 	while True:
-		message = communication.recvMessage(client, request.Request)
+		#message = communication.recvMessage(client, request.Request)
+		message = communication.recvMessage(client)
 
 		if message:
 			signature = communication.hmacFromRequest(message, key)
 
-			if signature == message.signature:
-				if message.command == "GET":
-					response = getMethod(message.url, message.clientId, message.clientInfo, key)
+			if signature == message['signature']:
+				if message['command'] == "GET":
+					response = getMethod(message['url'], message['clientId'], message['clientInfo'], key)
 					communication.sendMessage(client, response)
 
-				elif message.command == "POST":
-					response = postMethod(message.url, message.clientId, message.clientInfo, message.content, key)
+				elif message['command'] == "POST":
+					response = postMethod(message['url'], message['clientId'], message['clientInfo'], message['content'], key)
 					communication.sendMessage(client, response)
 
-				elif message.command == "DELETE":
-					response = deleteMethod(message.url, message.clientId, message.clientInfo, key)
+				elif message['command'] == "DELETE":
+					response = deleteMethod(message['url'], message['clientId'], message['clientInfo'], key)
 					communication.sendMessage(client, response)
 				else:
 					response = unknownMethod(key)
@@ -62,6 +64,7 @@ def listenConnection(Ip, Port):
 	'''
 
 	try:
+		bson.patch_socket()
 		server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		try:
 			server.bind((Ip, int(Port)))
@@ -77,9 +80,9 @@ def listenConnection(Ip, Port):
 			while True:
 				conn, addr = server.accept()
 				logging.info(" New Connection from " + str(addr[0]) + " with port " + str(addr[1]))
-				
+
 				aux = threading.Thread(target=connected, args=(conn,addr))
-				aux.setDaemon(True)				
+				aux.setDaemon(True)
 				aux.start()
 				threads.append(aux)
 		except:
@@ -145,7 +148,7 @@ def main(argv):
 		if(os.getuid() == 0):
 			synFlood()
 		else:
-			logging.info(" To prevent Syn Flood Attack, run the server with sudo")	
+			logging.info(" To prevent Syn Flood Attack, run the server with sudo")
 
 	listenConnection(Ip, Port)
 
@@ -155,3 +158,4 @@ if __name__ == '__main__':
 	'''
 
 	main(sys.argv[1:])
+

@@ -3,8 +3,8 @@ import socket
 import threading
 import logging
 
-import request_pb2 as request
-import response_pb2 as response
+#import request_pb2 as request
+#import response_pb2 as response
 import communication
 from pathlib import Path
 
@@ -17,13 +17,13 @@ def setDefaultServer(message):
 	:return: estrutura protobuf com os valores definidos
 	'''
 
-	message.status = ""
-	message.protoVersion = "1.0"
-	message.url = ""
-	message.serverInfo = "WebServer with Protobuf v1.0"
-	message.encoding = "utf-8"
-	message.content = ""
-	message.signature = ""
+	message['status'] = ""
+	message['protoVersion'] = "1.0"
+	message['url'] = ""
+	message['serverInfo'] = "WebServer with Protobuf v1.0"
+	message['encoding'] = "utf-8"
+	message['content'] = ""
+	message['signature'] = ""
 
 	return message
 
@@ -43,7 +43,8 @@ def getMethod(url, clientId, clientInfo, key):
 	:return: Protobuf já pronto para o envio
 	'''
 
-	message = response.Response()
+	#message = response.Response()
+	message = {}
 	archivePath = str(Path().absolute())
 	archivePath += '/contents/'
 
@@ -63,26 +64,26 @@ def getMethod(url, clientId, clientInfo, key):
 		else:
 			archivePath += url
 
-	message.url = url
+	message['url'] = url
 
 	logging.info(" GET {0}".format(url))
 
 	try:
 		archive = open(archivePath, 'r')
 		nameFile = archive.name.split('/')[-1]
-		message.content += archive.read()
+		message['content'] += archive.read()
 		logging.info(" GET Sucessful")
-		message.status = "OK - 200"
-		message.url = nameFile
+		message['status'] = "OK - 200"
+		message['url'] = nameFile
 		archive.close()
 	except FileNotFoundError:
-		message.status = "FAIL - 404"
+		message['status'] = "FAIL - 404"
 		logging.info(" Archive not found")
 	except OSError:
-		message.status = "FAIL - 403"
+		message['status'] = "FAIL - 403"
 		logging.info(" Error on archive")
 
-	message.signature = communication.hmacFromResponse(message, key)
+	message['signature'] = communication.hmacFromResponse(message, key)
 
 	return message
 
@@ -100,7 +101,8 @@ def postMethod(url, clientId, clientInfo, content, key):
 	:return: Estrutura Protobuf já pronta para o envio
 	'''
 
-	message = response.Response()
+	#message = response.Response()
+	message = {}
 	archivePath = str(Path().absolute())
 	archivePath += '/contents/'
 
@@ -130,18 +132,18 @@ def postMethod(url, clientId, clientInfo, content, key):
 
 	if os.path.exists(archivePath):
 		logging.info(" POST in a existent file")
-		message.status = "FAIL - 403"
+		message['status'] = "FAIL - 403"
 	else:
 		archive = open(archivePath, 'w+')
 
 		archive.write(content)
 		logging.info(" POST Sucessful")
-		message.status = "OK - 200"
+		message['status'] = "OK - 200"
 
 		archive.close()
-	message.url = url
-	message.content = content
-	message.signature = communication.hmacFromResponse(message, key)
+	message['url'] = url
+	message['content'] = content
+	message['signature'] = communication.hmacFromResponse(message, key)
 
 	return message
 
@@ -159,7 +161,8 @@ def deleteMethod(url, clientId, clientInfo, key):
 	:return: Estrutura protobuf de resposta já pronta para envio
 	'''
 
-	message = response.Response()
+	#message = response.Response()
+	message = {}
 	archivePath = str(Path().absolute())
 	archivePath += '/contents/'
 
@@ -184,14 +187,14 @@ def deleteMethod(url, clientId, clientInfo, key):
 	if os.path.exists(archivePath):
 		os.remove(archivePath)
 		logging.info(" DELETE Sucessful")
-		message.status = "OK - 200"
+		message['status'] = "OK - 200"
 	else:
 		logging.info(" DELETE Unsucessful")
-		message.status = "FAIL - 403"
+		message['status'] = "FAIL - 403"
 
-	message.url = url
-	message.content = ""
-	message.signature = communication.hmacFromResponse(message, key)
+	message['url'] = url
+	message['content'] = ""
+	message['signature'] = communication.hmacFromResponse(message, key)
 
 	return message
 
@@ -202,9 +205,11 @@ def unknownMethod(key):
 	'''
 
 	logging.info(" Unknown command")
-	message = response.Response()
+	#message = response.Response()
+	message = {}
 	message = setDefaultServer(message)
-	message.status = "FAIL - 401"
-	message.signature = communication.hmacFromResponse(message, key)
+	message['status'] = "FAIL - 401"
+	message['signature'] = communication.hmacFromResponse(message, key)
 
 	return message
+

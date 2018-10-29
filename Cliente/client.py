@@ -4,8 +4,9 @@
 import os, sys, getopt
 import socket
 import random
-import request_pb2 as request
-import response_pb2 as response
+import bson
+#import request_pb2 as request
+#import response_pb2 as response
 import communication
 from treatment.ccrypt import key_exchange
 from treatment.client import getResponse, sendMessage
@@ -25,6 +26,7 @@ def createConection(IP, Port):
 	:Port: Porta em que o servidor está rodando
 	'''
 
+	bson.patch_socket()
 	sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	try:
 		sock.connect((IP, int(Port)))
@@ -100,3 +102,4 @@ if __name__ == '__main__':
 	Inicio do programa e chamada da funcoa principal
 	'''
 	main(sys.argv[1:])
+
