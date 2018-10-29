@@ -1,6 +1,6 @@
-# WebServer with Protobuf
+# WebServer with BSON
 
-Este codigo tem como objetivo, exemplificar um caso de uso para o Protocol Buffers (Protobuf's), criado pela Google.
+Este codigo tem como objetivo, exemplificar um caso de uso BSON, criado pela Google.
 Trata-se de uma representação de um servidor web que executa em linha de comando.
 
 ## Métodos Disponíveis
@@ -18,7 +18,7 @@ $ python3
 ```
 
 ```
-Módulos Google - pip3 install google-cloud-storage
+Módulos BSON - pip3 install bson
 
 Módulos de criptografia - pip3 install pycrypto
 ```
