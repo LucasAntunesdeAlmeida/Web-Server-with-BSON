@@ -119,10 +119,12 @@ def help():
 	print("Métodos disponíveis:\n-> GET - Faz o pedido de um arquivo a um servidor")
 	print("-> POST - Envia um arquivo para o servidor")
 	print("-> DELETE - Exclui um arquivo do servidor, apenas o dono do arquivo consegue deletar este arquivo")
-	print("Uso => python3 {0} -h -i/--ip <IP_Server> -p/--port <Port_Server>".format(sys.argv[0]))
+	print("Uso => python3 {0} -h -i/--ip <IP_Server> -p/--port <Port_Server> -a/--atac <IP_Atacante> -d/--portA <Port_Atacante>".format(sys.argv[0]))
 	print("\n\nParametros\n-h\t\tExibe a ajuda")
 	print("-i/--ip\t\tParametro que define o IP do servidor")
 	print("-p/--port\tParametro que define a Porta em o que o servidor está rodando")
+	print("-a/--atac\tParametro que define o IP do atacante")
+	print("-d/--portA\tParametro que define a Porta em que o atacante esta rodando")
 
 def main(argv):
 	'''
