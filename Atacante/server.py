@@ -12,17 +12,16 @@ from pathlib import Path
 import communication
 from treatment.scrypt import key_exchange
 from treatment.server import (clearRules, deleteMethod, getMethod, postMethod,
-                              synFlood, unknownMethod)
+				synFlood, unknownMethod)
 
 try:
-    import bson
+   	import bson
 except:
-    print("Falha ao importar as bibliotecas\nTente: sudo pip3 install bson")
+	print("Falha ao importar as bibliotecas\nTente: sudo pip3 install bson")
 
 logging.basicConfig(level=logging.INFO, format='%(levelname)s:%(threadName)s:%(message)s')
 
-
-def connected(client, addr):
+def connected(client, addr, servidor):
 	'''
 	Função que recebe a conexão
 
@@ -32,34 +31,23 @@ def connected(client, addr):
 	:param addr: Endereço IP e Porta do cliente
 	'''
 
-	key=43501#key_exchange(client)
+	keyClient=43501#key_exchange(client)
+	KeyServidor=43501#key_exchange(servidor)
 
 	while True:
 		message = communication.recvMessage(client)
 		if message:
-			signature = communication.hmacFromRequest(message, key)
-			print('sig = {0}'.format(signature))
-			print('message = {0}'.format(message['signature']))
+			logging.info("[Cliente]Mensagem enviada para o servidor")
+			communication.sendMessage(servidor, message)
 
-			if signature == message['signature']:
-				print('aqui')
-				if message['command'] == "GET":
-					response = getMethod(message['url'], message['clientId'], message['clientInfo'], key)
-					communication.sendMessage(client, response)
-
-				elif message['command'] == "POST":
-					response = postMethod(message['url'], message['clientId'], message['clientInfo'], message['content'], key)
-					communication.sendMessage(client, response)
-
-				elif message['command'] == "DELETE":
-					response = deleteMethod(message['url'], message['clientId'], message['clientInfo'], key)
-					communication.sendMessage(client, response)
-				else:
-					response = unknownMethod(key)
-					communication.sendMessage(client, response)
+		responseFromServer = communication.recvMessage(servidor)
+		if responseFromServer:
+			logging.info("[Servidor]Mensagem enviada para o cliente")
+			communication.sendMessage(client, responseFromServer)
+			
 	client.close()
 
-def listenConnection(Ip, Port):
+def listenConnection(IpServidor, PortServidor, IpAtacante, PortAtacante):
 	'''
 	Coloca o servidor para rodar, de fato
 
@@ -72,23 +60,33 @@ def listenConnection(Ip, Port):
 
 	try:
 		bson.patch_socket()
-		server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-		try:
-			server.bind((Ip, int(Port)))
-			server.listen(10)
-		except:
-			logging.info(" Error on start server")
+		cliente = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		servidor = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-		logging.info(" WebServer running on port {0}".format(Port))
+		try:
+			cliente.bind((IpAtacante, int(PortAtacante)))
+			cliente.listen(10)
+		except:
+			logging.info("[Atacante]Error on start server")
+
+		try:
+			servidor.connect((IpServidor, int(PortServidor)))
+			print("[Servidor] Conexão Estabelecida")
+		except ConnectionRefusedError:
+			print("[Servidor] Conexão Recusada")
+			exit(1)
+
+		logging.info("[Servidor] WebServer running on port {0}".format(PortServidor))
+		logging.info("[Atacante] WebServer running on port {0}".format(PortAtacante))
 
 		threads = []
 
 		try:
 			while True:
-				conn, addr = server.accept()
-				logging.info(" New Connection from " + str(addr[0]) + " with port " + str(addr[1]))
+				connC, addrC = cliente.accept()
+				logging.info(" [Cliente] New Connection from " + str(addrC[0]) + " with port " + str(addrC[1]))
 
-				aux = threading.Thread(target=connected, args=(conn,addr))
+				aux = threading.Thread(target=connected, args=(connC,addrC,servidor))
 				aux.setDaemon(True)
 				aux.start()
 				threads.append(aux)
@@ -97,7 +95,7 @@ def listenConnection(Ip, Port):
 				clearRules()
 			logging.info(" Ending the server execution")
 
-		server.close()
+		cliente.close()
 
 	except (KeyboardInterrupt, SystemExit):
 		if(os.getuid() == 0):
@@ -129,11 +127,14 @@ def main(argv):
 
 	:param argv: lista de parametros
 	'''
-	Ip = '127.0.0.1'
-	Port= 0
+	IpServidor = '127.0.0.1'
+	IpAtacante = '127.0.0.1'
+	PortServidor = 0
+	PortAtacante = 0
+
 
 	try:
-		opts, args = getopt.getopt(argv, "hi:p:",["ip=","port="])
+		opts, args = getopt.getopt(argv, "hi:p:a:d:",["ip=","port=","atac=","portA"])
 	except getopt.GetoptError:
 		help()
 		sys.exit(1)
@@ -143,11 +144,15 @@ def main(argv):
 			help()
 			sys.exit()
 		elif opt in ("-i", "--ip"):
-			Ip = arg
+			IpServidor = arg
 		elif opt in ("-p", "--port"):
-			Port = arg
+			PortServidor = arg
+		elif opt in ("-d", "--portA"):
+			PortAtacante = arg
+		elif opt in ("-a", "--atac"):
+			IpAtacante = arg
 
-	if Port == 0:
+	if PortServidor == 0 or PortAtacante == 0:
 		help()
 		sys.exit(1)
 
@@ -157,7 +162,7 @@ def main(argv):
 		else:
 			logging.info(" To prevent Syn Flood Attack, run the server with sudo")
 
-	listenConnection(Ip, Port)
+	listenConnection(IpServidor, PortServidor, IpAtacante, PortAtacante)
 
 if __name__ == '__main__':
 	'''

@@ -44,7 +44,7 @@ def createConection(IP, Port):
 		helpMessage()
 		data = input("\nComando => ").upper()
 		clientId = str(random.randint(1000,9999))
-		key=43501#key_exchange(sock)
+		key=key_exchange(sock)
 
 		while(data != "SAIR"):
 			message = sendMessage(data, communication, clientId, sock, key)
