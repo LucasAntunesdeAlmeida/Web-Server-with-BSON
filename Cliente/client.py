@@ -43,7 +43,7 @@ def createConection(IP, Port, IPSeguro, PortSeguro, flag):
 	if flag:
 		sockSeguro = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 		try:
-			sockSeguro.connect(IPSeguro, int(PortSeguro))
+			sockSeguro.connect((IPSeguro, int(PortSeguro)))
 			print("Conexão Estabelecida com o servidor seguro")
 		except ConnectionRefusedError:
 			print("Conexão Recusada pelo servidor seguro")
