@@ -40,10 +40,10 @@ def connected(client, addr, servidor):
 			logging.info("[Cliente]Mensagem enviada para o servidor")
 			communication.sendMessage(servidor, message)
 
-		responseFromServer = communication.recvMessage(servidor)
-		if responseFromServer:
-			logging.info("[Servidor]Mensagem enviada para o cliente")
-			communication.sendMessage(client, responseFromServer)
+			responseFromServer = communication.recvMessage(servidor)
+			if responseFromServer:
+				logging.info("[Servidor]Mensagem enviada para o cliente")
+				communication.sendMessage(client, responseFromServer)
 
 	client.close()
 
