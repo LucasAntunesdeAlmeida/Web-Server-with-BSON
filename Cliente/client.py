@@ -56,10 +56,10 @@ def createConection(IP, Port, IPSeguro, PortSeguro, flag):
 		key=43501#key_exchange(sock)
 
 		while(data != "SAIR"):
-			message = sendMessage(data, communication, clientId, sock, key)
+			message = sendMessage(data, communication, clientId, sock, key, True, '')
 			respotaMensagem = getResponse(communication, message, sock, key)
 			if flag:
-				messageSegura = sendMessage(data, communication, clientId, sockSeguro, key)
+				messageSegura = sendMessage(data, communication, clientId, sockSeguro, key, False, message['url'])
 				respostaMensagemSegura = getResponse(communication, messageSegura, sockSeguro, key)
 
 				print(respotaMensagem['signature'])

@@ -29,12 +29,15 @@ def setDefaultClient(message):
 
 	return message
 
-def sendMessage(data, communication, clientId, sock, key):
+def sendMessage(data, communication, clientId, sock, key, flag, url):
 	message = {}
 	message = setDefaultClient(message)
 
 	message['command'] = data
-	message['url'] = input("Url => ")
+	if flag:
+		message['url'] = input("Url => ")
+	else:
+		message['url'] = url
 	message['clientId'] = clientId
 	message['clientInfo'] = socket.gethostname().upper()
 
