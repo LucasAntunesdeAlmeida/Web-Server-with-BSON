@@ -38,8 +38,6 @@ def connected(client, addr):
 		message = communication.recvMessage(client)
 		if message:
 			signature = communication.hmacFromRequest(message, key)
-			print('sig = {0}'.format(signature))
-			print('message = {0}'.format(message['signature']))
 
 			if signature == message['signature']:
 				print('aqui')

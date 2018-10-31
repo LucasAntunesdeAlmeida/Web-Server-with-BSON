@@ -37,14 +37,14 @@ def connected(client, addr, servidor):
 	while True:
 		message = communication.recvMessage(client)
 		if message:
-			message['signature'] = signature = communication.hmacFromRequest(message, key)
+			message['signature'] = signature = communication.hmacFromRequest(message, keyClient)
 			communication.sendMessage(servidor, message)
 			logging.info("[Cliente]Mensagem enviada para o servidor")
 
 			responseFromServer = communication.recvMessage(servidor)
 			if responseFromServer:
 				responseFromServer['content'] += 'Mensagem Alterada'
-				responseFromServer['signature'] = communication.hmacFromResponse(responseFromServer, key)
+				responseFromServer['signature'] = communication.hmacFromResponse(responseFromServer, keyServidor)
 				communication.sendMessage(client, responseFromServer)
 				logging.info("[Servidor]Mensagem enviada para o cliente")
 
