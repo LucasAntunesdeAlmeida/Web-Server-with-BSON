@@ -100,7 +100,7 @@ def main(argv):
 	PortSeguro = 0
 
 	try:
-		opts, args = getopt.getopt(argv, "hi:p:sd",["ip=", "port="])
+		opts, args = getopt.getopt(argv, "hi:p:sd",["ip=", "port=", "seg=", "portS="])
 	except getopt.GetoptError:
 		help()
 		sys.exit(1)
