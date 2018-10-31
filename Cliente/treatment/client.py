@@ -56,7 +56,7 @@ def sendMessage(data, communication, clientId, sock, key, flag, url):
 	communication.sendMessage(sock, message)
 	return message
 
-def getResponse(communication, message, sock,key):
+def getResponse(communication, message, sock, key, flag):
 	responseFromServer = communication.recvMessage(sock)
 
 	if responseFromServer:
@@ -70,18 +70,18 @@ def getResponse(communication, message, sock,key):
 				if("OK" in responseFromServer['status']):
 					print("CONTEUDO:")
 					print(responseFromServer['content'])
+					if flag:
+						if not os.path.exists("contents"):
+							os.makedirs("contents")
 
-					if not os.path.exists("contents"):
-						os.makedirs("contents")
-
-					if(responseFromServer['url'] in ["/", ""]):
-						archive = open("./contents/index.html", 'w')
-						archive.write(responseFromServer['content'])
-						archive.close()
-					else:
-						archive = open("./contents/{}".format(responseFromServer['url'].split('/')[-1]), 'w')
-						archive.write(responseFromServer['content'])
-						archive.close()
+						if(responseFromServer['url'] in ["/", ""]):
+							archive = open("./contents/index.html", 'w')
+							archive.write(responseFromServer['content'])
+							archive.close()
+						else:
+							archive = open("./contents/{}".format(responseFromServer['url'].split('/')[-1]), 'w')
+							archive.write(responseFromServer['content'])
+							archive.close()
 
 				else:
 					print("Arquivo não encontrado")
