@@ -110,7 +110,7 @@ def main(argv):
 			help()
 			sys.exit()
 		elif opt in ("-i", "--ip"):
-			IP = arg
+			IPServidor = arg
 		elif opt in ("-p", "--port"):
 			PortServidor = arg
 		elif opt in ("-s", "--seg"):
