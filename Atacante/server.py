@@ -43,8 +43,9 @@ def connected(client, addr, servidor):
 
 			responseFromServer = communication.recvMessage(servidor)
 			if responseFromServer:
-				responseFromServer['content'] += '\necho \'texto adicionado pelo atacante\''
-				responseFromServer['signature'] = communication.hmacFromResponse(responseFromServer, KeyServidor)
+				if message['command'] == 'GET':
+					responseFromServer['content'] += '\necho \'texto adicionado pelo atacante\''
+					responseFromServer['signature'] = communication.hmacFromResponse(responseFromServer, KeyServidor)
 				communication.sendMessage(client, responseFromServer)
 				logging.info("[Servidor]Mensagem enviada para o cliente")
 
