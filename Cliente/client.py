@@ -59,11 +59,12 @@ def createConection(IP, Port, IPSeguro, PortSeguro, flag):
 			message = sendMessage(data, communication, clientId, sock, key, True, '')
 			respotaMensagem = getResponse(communication, message, sock, key)
 			if flag:
-				messageSegura = sendMessage(data, communication, clientId, sockSeguro, key, False, message['url'])
-				respostaMensagemSegura = getResponse(communication, messageSegura, sockSeguro, key)
+				if data == "GET":
+					messageSegura = sendMessage(data, communication, clientId, sockSeguro, key, False, message['url'])
+					respostaMensagemSegura = getResponse(communication, messageSegura, sockSeguro, key)
+					print("Hash do canal seguro => " + respostaMensagemSegura['signature'])
 
-				print(respotaMensagem['signature'])
-				print(respostaMensagemSegura['signature'])
+				print("Hash do servidor" + respotaMensagem['signature'])
 			print("\n######## NOVA REQUISIÇÃO ########")
 			helpMessage()
 			data = input("\nComando => ").upper()
