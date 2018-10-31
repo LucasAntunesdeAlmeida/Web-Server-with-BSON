@@ -12,9 +12,9 @@ from treatment.ccrypt import key_exchange
 from treatment.client import getResponse, sendMessage
 
 try:
-    import bson
+	import bson
 except:
-    print("Falha ao importar as bibliotecas\nTente: sudo pip3 install bson")
+	print("Falha ao importar as bibliotecas\nTente: sudo pip3 install bson")
 
 def helpMessage():
 	print("\nComandos disponíveis:\n\n\tGET - Recebe um arquivo do Servidor\n\tPOST - Envia um arquivo existente para o Servidor\n\tDELETE - Exclui um arquivo de sua autoria do servidor\n\nPara finalizar o programa, utilize 'SAIR'")
@@ -40,14 +40,14 @@ def createConection(IP, Port, IPSeguro, PortSeguro, flag):
 		print("Conexão Recusada pelo servidor")
 		exit(1)
 
-    if flag:
-        sockSeguro = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        try:
-            sockSeguro.connect(IPSeguro, int(PortSeguro))
-            print("Conexão Estabelecida com o servidor seguro")
-        except ConnectionRefusedError:
-            print("Conexão Recusada pelo servidor seguro")
-            exit(1)
+	if flag:
+		sockSeguro = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+		try:
+			sockSeguro.connect(IPSeguro, int(PortSeguro))
+			print("Conexão Estabelecida com o servidor seguro")
+		except ConnectionRefusedError:
+			print("Conexão Recusada pelo servidor seguro")
+			exit(1)
 
 	try:
 		helpMessage()
@@ -58,12 +58,12 @@ def createConection(IP, Port, IPSeguro, PortSeguro, flag):
 		while(data != "SAIR"):
 			message = sendMessage(data, communication, clientId, sock, key)
 			getResponse(communication, message, sock, key)
-            if flag:
-                messageSegura = sendMessage(data, communication, clientId, sockSeguro, key)
-                getResponse(communication, message, sockSeguro, key)
+			if flag:
+				messageSegura = sendMessage(data, communication, clientId, sockSeguro, key)
+				getResponse(communication, message, sockSeguro, key)
 
-            print(message['signature'])
-            print(messageSegura['signature'])
+				print(message['signature'])
+				print(messageSegura['signature'])
 			print("\n######## NOVA REQUISIÇÃO ########")
 			helpMessage()
 			data = input("\nComando => ").upper()
@@ -84,8 +84,8 @@ def help():
 	print("\n\nParametros\n-h\t\tExibe a ajuda")
 	print("-i/--ip\t\tParametro que define o IP do servidor")
 	print("-p/--port\tParametro que define a Porta em o que o servidor está rodando")
-    print("-s/--seg\tParametro que define o IP do servidor")
-    print("-d/--portS\tParametro que define a Porta em o que o servidor está rodando")
+	print("-s/--seg\tParametro que define o IP do servidor")
+	print("-d/--portS\tParametro que define a Porta em o que o servidor está rodando")
 
 def main(argv):
 	'''
@@ -96,8 +96,8 @@ def main(argv):
 
 	IPServidor = ''
 	PortServidor= 0
-    IPSeguro = ''
-    PortSeguro = 0
+	IPSeguro = ''
+	PortSeguro = 0
 
 	try:
 		opts, args = getopt.getopt(argv, "hi:p:sd",["ip=", "port="])
@@ -113,18 +113,18 @@ def main(argv):
 			IP = arg
 		elif opt in ("-p", "--port"):
 			PortServidor = arg
-        elif opt in ("-s", "--seg"):
+		elif opt in ("-s", "--seg"):
 			IPSeguro = arg
-        elif opt in ("-d", "--portS"):
+		elif opt in ("-d", "--portS"):
 			PortSeguro = arg
 
 	if ((IPServidor == '') or (PortServidor == 0)):
 		help()
 		sys.exit(1)
-    flag = False
+	flag = False
 
-    if ((IPSeguro != '') and (PortSeguro != 0)):
-        flag = True
+	if ((IPSeguro != '') and (PortSeguro != 0)):
+		flag = True
 
 	createConection(IPServidor, PortServidor, IPSeguro, PortSeguro, flag)
 
