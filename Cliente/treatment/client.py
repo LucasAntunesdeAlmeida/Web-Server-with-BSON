@@ -99,3 +99,4 @@ def getResponse(communication, message, sock,key):
 			else:
 				print("STATUS:", responseFromServer['status'])
 				print("Comando Desconhecido")
+			return responseFromServer

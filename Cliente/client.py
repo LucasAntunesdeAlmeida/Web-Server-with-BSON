@@ -57,13 +57,13 @@ def createConection(IP, Port, IPSeguro, PortSeguro, flag):
 
 		while(data != "SAIR"):
 			message = sendMessage(data, communication, clientId, sock, key)
-			getResponse(communication, message, sock, key)
+			respotaMensagem = getResponse(communication, message, sock, key)
 			if flag:
 				messageSegura = sendMessage(data, communication, clientId, sockSeguro, key)
-				getResponse(communication, message, sockSeguro, key)
+				respostaMensagemSegura = getResponse(communication, messageSegura, sockSeguro, key)
 
-				print(message['signature'])
-				print(messageSegura['signature'])
+				print(respotaMensagem['signature'])
+				print(respostaMensagemSegura['signature'])
 			print("\n######## NOVA REQUISIÇÃO ########")
 			helpMessage()
 			data = input("\nComando => ").upper()
