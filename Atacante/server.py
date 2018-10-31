@@ -44,7 +44,7 @@ def connected(client, addr, servidor):
 		if responseFromServer:
 			logging.info("[Servidor]Mensagem enviada para o cliente")
 			communication.sendMessage(client, responseFromServer)
-			
+
 	client.close()
 
 def listenConnection(IpServidor, PortServidor, IpAtacante, PortAtacante):
@@ -95,6 +95,7 @@ def listenConnection(IpServidor, PortServidor, IpAtacante, PortAtacante):
 				clearRules()
 			logging.info(" Ending the server execution")
 
+		servidor.close()
 		cliente.close()
 
 	except (KeyboardInterrupt, SystemExit):
